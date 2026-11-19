@@ -92,7 +92,7 @@ reparaciones:{a:'Añadir reparación',fl:[['fecha','Fecha','date'],['km','Kilóm
 mantenimientos:{a:'Añadir mantenimiento',fl:[['fecha','Fecha','date'],['km','Kilómetros','int','125.000'],['tipo','Tipo','sel','Aceite y filtros|Neumáticos|Frenos|Correa de distribución|Otro'],['proximo_km','Próximo a los (km)','int','140.000','o'],['importe','Importe (€)','dec','145,00']]},
 gastos:{a:'Añadir gasto',fl:[['fecha','Fecha','date'],['concepto','Concepto','text','Parking, peaje…'],['categoria','Categoría','sel','Parking|Peajes|Lavado|Seguro|Impuestos|Accesorios|Otros'],['importe','Importe (€)','dec','12,00']]},
 documentos:{a:'Añadir documento',fl:[['tipo','Tipo','sel','ITV|Seguro|Impuesto|Revisión|Ficha técnica|Otro'],['nombre','Nombre','text','Póliza 2027','o'],['vencimiento','Vencimiento','date']]},
-vehiculos:{a:'Añadir vehículo',fl:[['nombre','Nombre','text','Coche 1'],['marca_modelo','Marca y modelo','text','Seat León 2.0 TDI','o'],['matricula','Matrícula','text','0000 XXX','o'],['km_actuales','Kilómetros actuales','int','125.000'],['anio','Año','int','2018','o'],['combustible','Combustible','sel','Gasoil|Gasolina|Híbrido|Eléctrico'],['tipo','Tipo de vehículo','pick','Coche|4x4 / SUV|Furgoneta|Moto|Camión'],['color','Color del icono','pick','Azul|Verde|Naranja|Rojo|Morado|Gris'],['foto','Foto de tu vehículo','file','','o']]}};
+vehiculos:{a:'Añadir vehículo',fl:[['nombre','Nombre','text','Coche 1'],['marca_modelo','Marca y modelo','text','Seat León 2.0 TDI','o'],['matricula','Matrícula','text','0000 XXX','o'],['km_actuales','Kilómetros actuales','int','125.000'],['anio','Año','int','2018','o'],['combustible','Combustible','sel','Gasoil|Gasolina|Híbrido|Eléctrico'],['tipo','Tipo de vehículo','pick','Coche|4x4 / SUV|Furgoneta|Moto|Camión'],['color','Color del icono','pick','Azul|Verde|Naranja|Rojo|Morado|Gris'],['quitarfoto','Foto actual','sel','Mantener la foto|Quitar la foto y usar el icono'],['foto','Foto de tu vehículo','file','','o']]}};
 const TIPOS={'Coche':'car','4x4 / SUV':'suv','Furgoneta':'van','Moto':'moto','Camión':'truck'},COLS={Azul:'#3b82f6',Verde:'#22c55e',Naranja:'#f59e0b',Rojo:'#ef4444',Morado:'#a855f7',Gris:'#94a3b8'};
 const W=(x,y,r)=>`<circle cx="${x}" cy="${y}" r="${r}" style="fill:var(--bg)" stroke="currentColor" stroke-width="5"/><circle cx="${x}" cy="${y}" r="${r/3}" fill="currentColor"/>`,G=d=>`<path d="${d}" style="fill:var(--bg);fill-opacity:.45"/>`,B=d=>`<path d="${d}" fill="currentColor"/>`;
 const SIL={'Coche':B("M12 56V46Q12 40 20 38L44 34L60 16Q63 13 68 13H100Q106 13 110 18L124 36L142 40Q150 42 150 50V56Z")+G("M64 19H82V34H52Z")+G("M88 19H102Q104 19 106 22L116 34H88Z")+W(42,57,12)+W(122,57,12),
@@ -145,7 +145,7 @@ $('#ch').innerHTML=S.veh.map(v=>`<button class="chip ${v.id==S.cur?'on':''}" dat
 $('#tg').innerHTML=I(th?'moon':'sun');$('#out').innerHTML=I('out');
 const w=$('#vw');w.innerHTML=!S.cur?`<div class="card"><div class="empty"><p>Todavía no tienes ningún vehículo.</p><button class="b p" data-open="vehiculos">${I('plus',18)}Añadir mi primer vehículo</button></div></div>`:S.tab=='ini'?home():S.tab=='e'?stats():lst(t);
 w.classList.remove('view');void w.offsetWidth;w.classList.add('view')}
-function open(tb,r=null){const f=F[tb];M={t:tb,r};const fd=f.fl.map(([n,l,t,p,o])=>{let v=r?r[n]:null;if(v==null)v=t=='date'&&n=='fecha'?ymd(new Date()):t=='sel'&&r==null?'':'';
+function open(tb,r=null){const f=F[tb];M={t:tb,r};const fd=f.fl.filter(x=>x[0]!='quitarfoto'||(r&&r.foto)).map(([n,l,t,p,o])=>{let v=r?r[n]:null;if(v==null)v=t=='date'&&n=='fecha'?ymd(new Date()):t=='sel'&&r==null?'':'';
 if(t=='int'||t=='dec')v=v==null?'':String(v).replace('.',',');if(t=='sel'&&n=='lleno'&&r)v=r.lleno?'Sí':'No';
 const tg=t=='pick'?'div':'label',inp=t=='pick'?PICK(n,p,v):t=='file'?'<input id="f_foto" type="file" accept="image/*">':t=='calc'?`<output id="f_imp">${r&&r.importe!=null?eur(r.importe):'Calculado automáticamente'}</output>`:t=='sel'?`<select id="f_${n}">${p.split('|').map(x=>`<option ${x==v?'selected':''}>${x}</option>`).join('')}</select>`:`<input id="f_${n}" type="${t=='date'?'date':'text'}" ${t=='int'||t=='dec'?'inputmode="decimal"':''} placeholder="${p||''}" value="${v}">`;
 return`<${tg} class="cap ${t=='text'||t=='pick'||t=='file'?'full':''} ${v!==''&&t!='sel'&&t!='pick'&&t!='file'?'ok':''}" data-n="${n}" data-t="${t}" data-o="${o||''}"><span>${l}${o?' (opcional)':''}</span>${inp}</${tg}>`}).join('');
@@ -156,13 +156,15 @@ async function guardar(){const rec={};let bad=false;document.querySelectorAll('#
 if(!raw){v=null;e=!o}else if(t=='int'||t=='dec'){v=PA[t](raw);e=isNaN(v)||v<0}
 if(n=='lleno')v=raw=='Sí';c.classList.toggle('err',e);if(e)bad=true;rec[n]=v});
 if(bad)return toast('Revisa los campos marcados en rojo',1);
+const quitar=!!rec.quitarfoto&&rec.quitarfoto.startsWith('Quitar');delete rec.quitarfoto;
 if(M.t=='repostajes')rec.importe=Math.round(rec.litros*rec.precio_litro*100)/100;
-const fi=$('#f_foto'),file=fi&&fi.files[0],bt=$('[data-save]');bt.disabled=true;let q,id=M.r&&M.r.id;
+const fi=$('#f_foto'),file=fi&&fi.files[0];if(quitar&&!file)rec.foto=null;const bt=$('[data-save]');bt.disabled=true;let q,id=M.r&&M.r.id;
 if(M.t=='vehiculos')q=M.r?sb.from('vehiculos').update(rec).eq('id',id).select().single():sb.from('vehiculos').insert(rec).select().single();
 else{if(!M.r)rec.vehiculo_id=S.cur;q=M.r?sb.from(M.t).update(rec).eq('id',id):sb.from(M.t).insert(rec)}
 const{data,error}=await q;if(error){bt.disabled=false;return toast('No se pudo guardar: '+error.message,1)}
 if(M.t=='vehiculos'&&!M.r)S.cur=data.id;
-if(M.t=='vehiculos'&&file){try{const b=await reducir(file),path=`${S.user.id}/${data.id}-${Date.now()}.jpg`,up=await sb.storage.from('fotos').upload(path,b,{contentType:'image/jpeg'});if(up.error)throw up.error;const u2=await sb.from('vehiculos').update({foto:path}).eq('id',data.id);if(u2.error)throw u2.error;if(data.foto)await sb.storage.from('fotos').remove([data.foto])}catch(x){toast('El vehículo se guardó, pero la foto no: '+x.message,1)}}
+if(M.t=='vehiculos'&&M.r&&M.r.foto&&quitar&&!file)await sb.storage.from('fotos').remove([M.r.foto]);
+if(M.t=='vehiculos'&&file){try{const b=await reducir(file),path=`${S.user.id}/${data.id}-${Date.now()}.jpg`,up=await sb.storage.from('fotos').upload(path,b,{contentType:'image/jpeg'});if(up.error)throw up.error;const u2=await sb.from('vehiculos').update({foto:path}).eq('id',data.id);if(u2.error)throw u2.error;if(M.r&&M.r.foto)await sb.storage.from('fotos').remove([M.r.foto])}catch(x){toast('El vehículo se guardó, pero la foto no: '+x.message,1)}}
 if(rec.km&&rec.km>(veh()?veh().km_actuales||0:0)&&M.t!='vehiculos')await sb.from('vehiculos').update({km_actuales:rec.km}).eq('id',S.cur);
 close();await datos();toast('Guardado correctamente')}
 async function eliminar(){const v=M.t=='vehiculos';if(!confirm(v?'¿Eliminar este vehículo y TODOS sus registros? No se puede deshacer.':'¿Eliminar este registro? No se puede deshacer.'))return;
