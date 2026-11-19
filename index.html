@@ -138,7 +138,7 @@ function open(tb,r=null){const f=F[tb];M={t:tb,r};const fd=f.fl.map(([n,l,t,p,o]
 if(t=='int'||t=='dec')v=v==null?'':String(v).replace('.',',');if(t=='sel'&&n=='lleno'&&r)v=r.lleno?'Sí':'No';
 const inp=t=='calc'?`<output id="f_imp">${r&&r.importe!=null?eur(r.importe):'Calculado automáticamente'}</output>`:t=='sel'?`<select id="f_${n}">${p.split('|').map(x=>`<option ${x==v?'selected':''}>${x}</option>`).join('')}</select>`:`<input id="f_${n}" type="${t=='date'?'date':'text'}" ${t=='int'||t=='dec'?'inputmode="decimal"':''} placeholder="${p||''}" value="${v}">`;
 return`<label class="cap ${t=='text'?'full':''} ${v!==''&&t!='sel'?'ok':''}" data-n="${n}" data-t="${t}" data-o="${o||''}"><span>${l}${o?' (opcional)':''}</span>${inp}</label>`}).join('');
-$('#md').innerHTML=`<div class="ov" data-close><div class="md" role="dialog" aria-modal="true"><div class="mh"><span class="ic">${I(IC[tb])}</span><h2>${r?'Editar registro':f.a}</h2><button class="x" data-close aria-label="Cerrar">${I('x',18)}</button></div><div class="fl">${fd}</div><div class="mf">${r?`<button class="b g" data-del style="margin-right:auto;color:var(--er)">Eliminar</button>`:''}<button class="b g" data-close>Cancelar</button><button class="b p" data-save>${I('check',18)}Guardar</button></div></div></div>`;
+$('#md').innerHTML=`<div class="ov" data-ov><div class="md" role="dialog" aria-modal="true"><div class="mh"><span class="ic">${I(IC[tb])}</span><h2>${r?'Editar registro':f.a}</h2><button class="x" data-close aria-label="Cerrar">${I('x',18)}</button></div><div class="fl">${fd}</div><div class="mf">${r?`<button class="b g" data-del style="margin-right:auto;color:var(--er)">Eliminar</button>`:''}<button class="b g" data-close>Cancelar</button><button class="b p" data-save>${I('check',18)}Guardar</button></div></div></div>`;
 if(!r)setTimeout(()=>{const i=document.querySelector('#md input:not([type=date])');i&&i.focus()},60)}
 const close=()=>{$('#md').innerHTML='';M=null};
 async function guardar(){const rec={};let bad=false;document.querySelectorAll('#md .cap').forEach(c=>{const n=c.dataset.n,t=c.dataset.t,o=c.dataset.o;if(t=='calc')return;const raw=$('#f_'+n).value.trim();let v=raw,e=false;
@@ -156,6 +156,7 @@ close();await datos();toast('Guardado correctamente')}
 async function eliminar(){const v=M.t=='vehiculos';if(!confirm(v?'¿Eliminar este vehículo y TODOS sus registros? No se puede deshacer.':'¿Eliminar este registro? No se puede deshacer.'))return;
 const{error}=await sb.from(M.t).delete().eq('id',M.r.id);if(error)return toast('No se pudo eliminar: '+error.message,1);close();await datos();toast('Eliminado')}
 document.addEventListener('click',async e=>{const c=s=>e.target.closest(s);
+if(e.target.matches('[data-ov]'))return close();
 if(c('.md')&&!c('[data-close]')&&!c('[data-save]')&&!c('[data-del]'))return;
 if(c('[data-save]'))return guardar();if(c('[data-del]'))return eliminar();if(c('[data-close]'))return close();
 if(c('[data-ev]'))return open('vehiculos',veh());
