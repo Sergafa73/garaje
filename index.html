@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0c1424"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="icono-192.png">
+<title>Garaje · Gestión de vehículos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0c1424;--s:#131d33;--s2:#1a2742;--bd:#26344f;--tx:#e8edf7;--mu:#8fa0bd;--ac:#3b82f6;--ok:#22c55e;--wr:#f59e0b;--er:#ef4444;--sh:0 10px 28px rgba(0,0,0,.28);color-scheme:dark}
+:root[data-theme=light]{--bg:#eef2f8;--s:#fff;--s2:#f3f6fb;--bd:#dbe3ef;--tx:#0f1b33;--mu:#5a6b88;--sh:0 8px 22px rgba(20,40,80,.09);color-scheme:light}
+*{box-sizing:border-box}[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.45 Manrope,system-ui,-apple-system,Segoe UI,sans-serif;font-variant-numeric:tabular-nums;padding-top:env(safe-area-inset-top,0px)}
+button{font:inherit;color:inherit;cursor:pointer}svg{flex:none}
+.app{display:grid;grid-template-columns:230px 1fr;min-height:100vh}
+aside{position:sticky;top:0;height:100vh;padding:22px 14px;border-right:1px solid var(--bd);background:var(--s);display:flex;flex-direction:column;gap:4px}
+.logo{display:flex;gap:10px;align-items:center;font-weight:800;font-size:18px;padding:0 10px 18px}.logo i,.ic,.ic2{display:grid;place-items:center}
+.logo i{width:34px;height:34px;border-radius:10px;background:var(--ac);color:#fff}
+.nv{display:flex;gap:12px;align-items:center;padding:10px 12px;border:0;background:none;border-radius:12px;color:var(--mu);font-weight:600;text-align:left;transition:.15s}
+.nv:hover{background:var(--s2);color:var(--tx)}.nv.on{background:var(--ac);color:#fff}
+main{min-width:0;padding:0 28px 40px}
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--bg);display:flex;gap:10px;align-items:center;padding:18px 0 14px}
+.chips{display:flex;gap:8px;overflow-x:auto;flex:1;padding:2px}
+.chip{border:1px solid var(--bd);background:var(--s);padding:9px 16px;border-radius:99px;font-weight:600;white-space:nowrap;transition:.15s}
+.chip:hover{border-color:var(--ac)}.chip.on{background:var(--ac);border-color:var(--ac);color:#fff}.chip.add{border-style:dashed;color:var(--mu)}
+.tg{width:40px;height:40px;border-radius:50%;border:1px solid var(--bd);background:var(--s);display:grid;place-items:center}
+h1{font-size:26px;margin:6px 0 18px;font-weight:800}
+.view{animation:fd .3s ease}@keyframes fd{from{opacity:0;transform:translateY(8px)}}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:18px}
+.card{background:var(--s);border:1px solid var(--bd);border-radius:20px;padding:20px;box-shadow:var(--sh);transition:.18s}
+.card[data-go]{cursor:pointer}.card[data-go]:hover{transform:translateY(-3px);border-color:var(--ac)}
+.wide{grid-column:span 2}.ch{display:flex;gap:10px;align-items:center;margin-bottom:14px;font-weight:800}
+.ic,.ic2{width:36px;height:36px;border-radius:11px;background:color-mix(in srgb,var(--ac) 16%,transparent);color:var(--ac)}
+.kv{display:grid;grid-template-columns:1fr 1fr;gap:12px 16px}.kv small,.row small,.pr small{display:block;color:var(--mu);font-size:12px}.kv b{font-size:17px}
+.big{font-size:30px;font-weight:800;line-height:1.1}
+.bar{height:8px;border-radius:9px;background:var(--s2);overflow:hidden;margin:10px 0 4px}.bar i{display:block;height:100%;background:var(--ok);border-radius:9px}
+.car{height:120px;border-radius:14px;background:linear-gradient(135deg,var(--s2),color-mix(in srgb,var(--ac) 30%,var(--s2)));display:grid;place-items:center;color:var(--ac);margin-bottom:14px}
+.pill{display:inline-block;font-size:12px;font-weight:700;padding:3px 10px;border-radius:99px}
+.ok{background:color-mix(in srgb,var(--ok) 16%,transparent);color:var(--ok)}.wr{background:color-mix(in srgb,var(--wr) 16%,transparent);color:var(--wr)}.er{background:color-mix(in srgb,var(--er) 16%,transparent);color:var(--er)}
+.li{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;cursor:pointer;transition:.15s}.li:hover{background:var(--s2)}
+.row{display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;padding:12px;border-radius:14px;cursor:pointer;transition:.15s}.row:hover{background:var(--s2)}.row b{font-weight:600}.am{font-weight:800}
+.bh{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.b{border:0;border-radius:12px;padding:11px 18px;font-weight:700;display:inline-flex;gap:8px;align-items:center;transition:.15s}.b:active{transform:scale(.97)}.b:disabled{opacity:.6}
+.p{background:var(--ac);color:#fff}.p:hover{filter:brightness(1.1)}.g{background:var(--s2);color:var(--tx)}
+.seg{display:inline-flex;background:var(--s2);border-radius:12px;padding:3px}.seg button{border:0;background:none;padding:7px 14px;border-radius:10px;font-weight:700;color:var(--mu)}.seg button.on{background:var(--ac);color:#fff}
+.pr{display:grid;grid-template-columns:100px 1fr auto;gap:12px;align-items:center;padding:6px 0}.pr .bar{margin:0}.pr small{text-align:right}.pr b{display:block;text-align:right}.rs{margin-bottom:18px}
+.empty{color:var(--mu);padding:26px;text-align:center}.charts{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px}
+.ov,.au{background:rgba(5,10,20,.6);display:grid;place-items:center;padding:16px}
+.ov{position:fixed;inset:0;backdrop-filter:blur(3px);z-index:50;animation:fd .2s}.au{min-height:100vh;background:var(--bg)}
+.md{background:var(--s);border:1px solid var(--bd);border-radius:24px;width:min(520px,100%);max-height:92vh;overflow:auto;padding:22px;box-shadow:0 24px 60px rgba(0,0,0,.45);animation:pop .25s cubic-bezier(.2,.9,.3,1.2)}
+@keyframes pop{from{opacity:0;transform:scale(.94)}}
+.mh{display:flex;gap:12px;align-items:center;margin-bottom:16px}.mh h2{margin:0;font-size:20px;flex:1}
+.x{border:0;background:var(--s2);width:36px;height:36px;border-radius:50%;display:grid;place-items:center}
+.fl{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.cap{display:block;background:var(--s2);border:2px solid var(--bd);border-radius:18px;padding:10px 16px 8px;transition:.15s}
+.cap:focus-within{border-color:var(--ac)}.cap.ok{border-color:var(--ok)}.cap.err{border-color:var(--er)}.cap span{display:block;font-size:12px;color:var(--mu);font-weight:600}
+.cap input,.cap select,.cap output{display:block;width:100%;border:0;background:none;color:var(--tx);font:inherit;font-size:18px;font-weight:700;padding:3px 0;outline:0}
+.cap output{color:var(--mu);font-size:15px;padding:6px 0}.cap select option{color:#000}.full{grid-column:1/-1}
+.mf{display:flex;gap:10px;justify-content:flex-end;margin-top:18px}
+.toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:var(--ok);color:#06210f;font-weight:700;padding:12px 20px;border-radius:14px;z-index:60;display:flex;gap:8px;align-items:center;animation:fd .25s;box-shadow:var(--sh);max-width:90vw}.toast.e{background:var(--er);color:#fff}
+.bn{display:none}
+@media(max-width:820px){.app{grid-template-columns:1fr}aside{display:none}main{padding:0 14px 96px}.wide{grid-column:auto}.top{padding-top:12px}h1{font-size:22px}
+.bn{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:25;background:var(--s);border-top:1px solid var(--bd);overflow-x:auto;padding:6px 6px calc(6px + env(safe-area-inset-bottom,0px))}
+.bn button{flex:1 0 74px;border:0;background:none;color:var(--mu);display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;font-weight:600;padding:6px 4px;border-radius:12px}.bn button.on{color:var(--ac);background:var(--s2)}
+.ov{align-items:end;padding:0}.ov .md{border-radius:24px 24px 0 0;width:100%}.fl{grid-template-columns:1fr}.cap input,.cap select{font-size:16px}.toast{bottom:100px}.pr{grid-template-columns:80px 1fr auto}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+</style></head><body>
+<div class="au" id="au" hidden><div class="md" style="animation:none"><div class="mh"><span class="ic" id="aui"></span><h2>Garaje</h2></div>
+<div class="fl"><label class="cap full"><span>Correo electrónico</span><input id="em" type="email" autocomplete="email"></label><label class="cap full"><span>Contraseña (mínimo 6 caracteres)</span><input id="pw" type="password" autocomplete="current-password"></label></div>
+<p id="am" style="margin:12px 0 0"></p><div class="mf"><button class="b g" id="reg">Crear cuenta</button><button class="b p" id="ent">Entrar</button></div></div></div>
+<div class="app" id="app" hidden><aside id="sd"></aside><main><div class="top"><div class="chips" id="ch"></div><button class="tg" id="tg" aria-label="Cambiar tema"></button><button class="tg" id="out" aria-label="Cerrar sesión"></button></div><div id="vw" class="view"></div></main></div>
+<nav class="bn" id="bn" hidden></nav><div id="md"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="config.js"></script>
+<script>
+const sb=supabase.createClient(CONFIG.SUPABASE_URL,CONFIG.SUPABASE_KEY);
+const P={home:'M3 11l9-8 9 8|M5 10v10h14V10',fuel:'M4 21V4a1 1 0 011-1h8a1 1 0 011 1v17|M3 21h12|M14 9h3a2 2 0 012 2v6a1.5 1.5 0 003 0V8l-3-3',gauge:'M12 14l4-4|M3.3 17a9 9 0 1117.4 0',wrench:'M14.7 6.3a4 4 0 005.4 5.4L11 20.8a2.1 2.1 0 01-3-3z',clock:'M12 7v5l3 2|M21 12a9 9 0 11-18 0 9 9 0 0118 0',euro:'M18 7a6 6 0 100 10|M4 10h9|M4 14h9',file:'M6 3h8l5 5v13H6z|M14 3v5h5',chart:'M4 20V10|M10 20V4|M16 20v-8|M22 20H2',plus:'M12 5v14|M5 12h14',moon:'M20 14A8 8 0 1110 4a7 7 0 0010 10z',sun:'M12 8a4 4 0 100 8 4 4 0 000-8z|M12 2v2|M12 20v2|M2 12h2|M20 12h2',car:'M5 16l1.5-5a2 2 0 011.9-1.4h7.2a2 2 0 011.9 1.4L19 16|M3 16h18v3H3z|M7 19v1|M17 19v1',x:'M6 6l12 12|M18 6L6 18',check:'M5 12l5 5L20 7',bell:'M6 8a6 6 0 0112 0c0 7 3 8 3 8H3s3-1 3-8|M10 20a2 2 0 004 0',out:'M9 21H5V3h4|M16 17l5-5-5-5|M21 12H9'};
+const I=(n,s=20)=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${P[n].split('|').map(d=>`<path d="${d}"/>`).join('')}</svg>`;
+const $=s=>document.querySelector(s),pad=n=>String(n).padStart(2,'0'),ymd=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`,dmy=i=>i?i.split('-').reverse().join('/'):'';
+const eur=n=>(n||0).toLocaleString('es-ES',{minimumFractionDigits:2,maximumFractionDigits:2})+' €',fN=n=>n==null?'—':Math.round(n).toLocaleString('es-ES'),f2=(x,s='')=>x==null?'—':String(+(+x).toFixed(2)).replace('.',',')+s;
+const PA={int:s=>parseInt(String(s).replace(/[.\s]/g,''),10),dec:s=>parseFloat(String(s).replace(',','.'))};
+const MN=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+const TBL=['repostajes','lecturas_km','reparaciones','mantenimientos','gastos','documentos'];
+const TB=[{id:'ini',n:'Inicio',i:'home'},{id:'c',n:'Combustible',i:'fuel',tb:'repostajes',b:'Añadir repostaje'},{id:'k',n:'Kilómetros',i:'gauge',tb:'lecturas_km',b:'Registrar kilómetros'},{id:'r',n:'Reparaciones',i:'wrench',tb:'reparaciones',b:'Añadir reparación'},{id:'m',n:'Mantenimientos',i:'clock',tb:'mantenimientos',b:'Añadir mantenimiento'},{id:'g',n:'Gastos',i:'euro',tb:'gastos',b:'Añadir gasto'},{id:'d',n:'Documentación',i:'file',tb:'documentos',b:'Añadir documento'},{id:'e',n:'Estadísticas',i:'chart'}];
+const IC={repostajes:'fuel',lecturas_km:'gauge',reparaciones:'wrench',mantenimientos:'clock',gastos:'euro',documentos:'file',vehiculos:'car'};
+const LB={repostajes:'Combustible',reparaciones:'Reparación',mantenimientos:'Mantenimiento',gastos:'Gasto'};
+const TX={repostajes:r=>`${r.gasolinera||'Repostaje'} · ${f2(r.litros)} L · ${f2(r.precio_litro)} €/L${r.lleno?'':' · parcial'}`,lecturas_km:r=>`Lectura ${fN(r.km)} km`,reparaciones:r=>(r.descripcion||'Reparación')+(r.taller?' · '+r.taller:''),mantenimientos:r=>`${r.tipo} · ${fN(r.km)} km`,gastos:r=>r.concepto+(r.categoria?' · '+r.categoria:''),documentos:r=>r.tipo+(r.nombre?' · '+r.nombre:'')};
+const F={
+repostajes:{a:'Añadir repostaje',fl:[['fecha','Fecha','date'],['km','Kilómetros','int','125.000'],['litros','Litros','dec','48,50'],['precio_litro','Precio por litro (€)','dec','1,42'],['importe','Importe','calc'],['gasolinera','Gasolinera','text','Escribir aquí','o'],['lleno','¿Depósito lleno?','sel','Sí|No']]},
+lecturas_km:{a:'Registrar kilómetros',fl:[['fecha','Fecha','date'],['km','Kilómetros actuales','int','125.000']]},
+reparaciones:{a:'Añadir reparación',fl:[['fecha','Fecha','date'],['km','Kilómetros','int','125.000','o'],['taller','Taller','text','Escribir aquí','o'],['descripcion','Descripción','text','Qué se reparó'],['importe','Importe (€)','dec','210,00']]},
+mantenimientos:{a:'Añadir mantenimiento',fl:[['fecha','Fecha','date'],['km','Kilómetros','int','125.000'],['tipo','Tipo','sel','Aceite y filtros|Neumáticos|Frenos|Correa de distribución|Otro'],['proximo_km','Próximo a los (km)','int','140.000','o'],['importe','Importe (€)','dec','145,00']]},
+gastos:{a:'Añadir gasto',fl:[['fecha','Fecha','date'],['concepto','Concepto','text','Parking, peaje…'],['categoria','Categoría','sel','Parking|Peajes|Lavado|Seguro|Impuestos|Accesorios|Otros'],['importe','Importe (€)','dec','12,00']]},
+documentos:{a:'Añadir documento',fl:[['tipo','Tipo','sel','ITV|Seguro|Impuesto|Revisión|Ficha técnica|Otro'],['nombre','Nombre','text','Póliza 2027','o'],['vencimiento','Vencimiento','date']]},
+vehiculos:{a:'Añadir vehículo',fl:[['nombre','Nombre','text','Coche 1'],['marca_modelo','Marca y modelo','text','Seat León 2.0 TDI','o'],['matricula','Matrícula','text','0000 XXX','o'],['km_actuales','Kilómetros actuales','int','125.000'],['anio','Año','int','2018','o'],['combustible','Combustible','sel','Gasoil|Gasolina|Híbrido|Eléctrico']]}};
+let S={veh:[],cur:null,d:{},tab:'ini',sm:'m',user:null},M=null;TBL.forEach(t=>S.d[t]=[]);
+const veh=()=>S.veh.find(x=>x.id==S.cur);
+function toast(m,e){const x=document.createElement('div');x.className='toast'+(e?' e':'');x.innerHTML=(e?'':I('check',18))+m;document.body.append(x);setTimeout(()=>x.remove(),e?5000:2600)}
+async function datos(){const v=await sb.from('vehiculos').select('*').order('creado');if(v.error)toast('No se pueden leer los vehículos: '+v.error.message,1);S.veh=v.data||[];if(!veh())S.cur=S.veh[0]?S.veh[0].id:null;TBL.forEach(t=>S.d[t]=[]);
+if(S.cur){const r=await Promise.all(TBL.map(t=>sb.from(t).select('*').eq('vehiculo_id',S.cur)));r.forEach((x,i)=>{if(x.error)toast(TBL[i]+': '+x.error.message,1);S.d[TBL[i]]=(x.data||[]).sort((a,b)=>{const p=a.fecha||a.vencimiento,q=b.fecha||b.vencimiento;return p<q?1:p>q?-1:0})})}
+render()}
+function items(id){const d=S.d,m=t=>d[t].map(r=>({t,r,f:r.fecha||r.vencimiento,a:r.importe}));return id=='g'?[...m('repostajes'),...m('reparaciones'),...m('mantenimientos'),...m('gastos')].sort((a,b)=>a.f<b.f?1:-1):m(TB.find(x=>x.id==id).tb)}
+function calc(){const d=S.d,v=veh(),hoy=new Date(),hs=ymd(hoy),ym=hs.slice(0,7),yr=hs.slice(0,4),pts=[...d.repostajes,...d.lecturas_km,...d.reparaciones,...d.mantenimientos].filter(x=>x.km!=null).map(x=>({f:x.fecha,k:x.km})),
+km=Math.max(v.km_actuales||0,...pts.map(p=>p.k)),antes=f=>{const a=pts.filter(p=>p.f<f).map(p=>p.k);return a.length?Math.max(...a):Math.min(km,...pts.map(p=>p.k))},
+all=items('g'),sum=p=>all.filter(x=>x.f.startsWith(p)).reduce((s,x)=>s+(x.a||0),0),
+ms=[...Array(6)].map((_,i)=>ymd(new Date(hoy.getFullYear(),hoy.getMonth()-5+i,1)).slice(0,7)),
+fin=k=>{const a=pts.filter(p=>p.f.slice(0,7)<=k).map(p=>p.k);return a.length?Math.max(...a):null},fins=ms.map(fin);let p=fin(ymd(new Date(hoy.getFullYear(),hoy.getMonth()-6,1)).slice(0,7));
+const ks=fins.map(e=>{const r=e!=null&&p!=null?e-p:0;if(e!=null)p=e;return r}),l0=fins.find(x=>x!=null);let l=l0==null?0:l0;const es=fins.map(e=>{if(e!=null)l=e;return l});
+const rp=d.repostajes.filter(x=>x.km).sort((a,b)=>a.km-b.km),ll=rp.map((x,i)=>x.lleno?i:-1).filter(i=>i>=0);let cons=null,ckm=null;
+if(ll.length>1){const a=ll[0],b=ll[ll.length-1],dk=rp[b].km-rp[a].km;if(dk>0){const sl=rp.slice(a+1,b+1);cons=sl.reduce((s,x)=>s+x.litros,0)/dk*100;ckm=sl.reduce((s,x)=>s+x.importe,0)/dk}}
+const vc=d.documentos.map(x=>({n:x.tipo,s:x.nombre,d:Math.round((new Date(x.vencimiento)-new Date(hs))/864e5),f:x.vencimiento})).sort((a,b)=>a.d-b.d),ult=d.mantenimientos[0];
+return{km,kmm:km-antes(ym+'-01'),kma:km-antes(yr+'-01-01'),gm:sum(ym),ga:sum(yr),gt:all.reduce((s,x)=>s+(x.a||0),0),gs:ms.map(sum),ks,es,ml:ms.map(k=>MN[+k.slice(5)-1].slice(0,3)),cons,ckm,rep:d.repostajes[0],vc,ult,rest:ult&&ult.proximo_km!=null?ult.proximo_km-km:null}}
+const col=d=>d<30?'er':d<90?'wr':'ok',dl=d=>d<0?'Vencido':d+' días';
+const spark=a=>{const m=Math.max(...a),n=Math.min(...a);return`<svg viewBox="0 0 100 30" width="100%" height="46" preserveAspectRatio="none"><polyline points="${a.map((v,i)=>`${i*20},${28-(v-n)/(m-n||1)*24}`).join(' ')}" fill="none" stroke="var(--ac)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`};
+const bars=(a,lb,u)=>{const m=Math.max(...a,1);return`<svg viewBox="0 0 300 150" width="100%">${a.map((v,i)=>{const h=v/m*100;return`<rect x="${i*50+10}" y="${120-h}" width="30" height="${h}" rx="7" fill="${i==5?'var(--ac)':'var(--s2)'}"><title>${lb[i]}: ${fN(v)} ${u}</title></rect><text x="${i*50+25}" y="140" text-anchor="middle" font-size="11" fill="var(--mu)">${lb[i]}</text><text x="${i*50+25}" y="${114-h}" text-anchor="middle" font-size="10" font-weight="700" fill="var(--tx)">${fN(v)}</text>`}).join('')}</svg>`};
+const crd=(c,t,i,b,g,x='')=>`<div class="card ${c}" ${g?`data-go="${g}" tabindex="0" role="button"`:''}><div class="ch"><span class="ic">${I(i)}</span>${t}${x}</div>${b}</div>`;
+function home(){const v=veh(),c=calc(),av=[];c.vc.forEach(x=>x.d<90&&av.push([x.n+(x.d<0?' vencido':' vence en '+x.d+' días'),col(x.d),'d']));if(c.rest!=null&&c.rest<5000)av.push(['Mantenimiento en '+fN(c.rest)+' km','wr','m']);
+return`<h1>${v.nombre}${v.marca_modelo?' · '+v.marca_modelo:''}</h1><div class="grid">`+
+crd('wide','Vehículo actual','car',`<div class="car">${I('car',64)}</div><div class="kv"><div><small>Marca y modelo</small><b>${v.marca_modelo||'—'}</b></div><div><small>Matrícula</small><b>${v.matricula||'—'}</b></div><div><small>Kilómetros</small><b>${fN(c.km)} km</b></div><div><small>Año · Combustible</small><b>${v.anio||'—'} · ${v.combustible||'—'}</b></div></div>`,'',`<button class="b g" data-ev style="margin-left:auto">Editar</button>`)+
+crd('','Gastos','euro',`<div class="big">${eur(c.gm)}</div><small style="color:var(--mu)">Este mes</small><div class="bar"><i style="width:${Math.min(100,c.gm/Math.max(...c.gs,1)*100)}%"></i></div><div class="kv" style="margin-top:12px"><div><small>Este año</small><b>${eur(c.ga)}</b></div><div><small>Total acumulado</small><b>${eur(c.gt)}</b></div></div>`,'g')+
+crd('','Combustible','fuel',`<div class="kv"><div><small>Último repostaje</small><b>${c.rep?dmy(c.rep.fecha):'—'}</b></div><div><small>Litros</small><b>${c.rep?f2(c.rep.litros,' L'):'—'}</b></div><div><small>Precio</small><b>${c.rep?f2(c.rep.precio_litro,' €/L'):'—'}</b></div><div><small>Consumo medio</small><b>${f2(c.cons,' L/100')}</b></div><div><small>Coste por km</small><b>${f2(c.ckm,' €')}</b></div></div>`,'c')+
+crd('','Kilómetros','gauge',`<div class="big">${fN(c.km)} km</div>${spark(c.es)}<div class="kv"><div><small>Este mes</small><b>${fN(c.kmm)} km</b></div><div><small>Este año</small><b>${fN(c.kma)} km</b></div></div>`,'k')+
+crd('','Mantenimientos','clock',c.ult?`<div class="kv"><div><small>Último</small><b>${c.ult.tipo}</b></div><div><small>Próximo a los</small><b>${fN(c.ult.proximo_km)} km</b></div></div>${c.rest!=null?`<p><span class="pill ${c.rest<5000?'wr':'ok'}">Faltan ${fN(c.rest)} km</span></p>`:''}`:'<div class="empty">Sin mantenimientos</div>','m')+
+crd('','Próximos vencimientos','file',c.vc.slice(0,4).map(x=>`<div class="li" data-go="d"><div><b>${x.n}</b><small style="display:block;color:var(--mu)">${dmy(x.f)}</small></div><span class="pill ${col(x.d)}">${dl(x.d)}</span></div>`).join('')||'<div class="empty">Sin vencimientos</div>','d')+
+crd('','Avisos','bell',av.map(a=>`<div class="li" data-go="${a[2]}"><span>${a[0]}</span><span class="pill ${a[1]}">Ver</span></div>`).join('')||'<div class="empty">Todo en orden</div>')+'</div>'}
+function resumen(id){const c=id=='c',g={};items(id).forEach(x=>{if(x.a==null)return;const k=S.sm=='m'?x.f.slice(0,7):x.f.slice(0,4),o=g[k]||(g[k]={a:0,l:0,n:0});o.a+=x.a;o.n++;if(c)o.l+=x.r.litros||0});
+const ks=Object.keys(g).sort().reverse(),mx=Math.max(...ks.map(k=>g[k].a),1),tot=ks.reduce((s,k)=>s+g[k].a,0);
+return`<div class="card rs"><div class="bh"><div class="ch" style="margin:0"><span class="ic">${I('chart')}</span>${c?'Combustible':'Gastos'} por ${S.sm=='m'?'mes':'año'}</div><div class="seg"><button class="${S.sm=='m'?'on':''}" data-sm="m">Por mes</button><button class="${S.sm=='y'?'on':''}" data-sm="y">Por año</button></div></div>`+(ks.length?ks.map(k=>{const o=g[k];return`<div class="pr"><span>${S.sm=='m'?MN[+k.slice(5)-1].slice(0,3)+' '+k.slice(0,4):k}</span><div class="bar"><i style="width:${o.a/mx*100}%"></i></div><div><b>${eur(o.a)}</b><small>${c?f2(o.l,' L')+' · '+o.n+' repostajes':o.n+' gastos'}</small></div></div>`}).join('')+`<div class="li" style="cursor:default;border-top:1px solid var(--bd);border-radius:0;margin-top:6px"><span>Total mostrado</span><b>${eur(tot)}</b></div>`:'<div class="empty">Sin datos todavía</div>')+'</div>'}
+function lst(t){const it=items(t.id);return`<h1>${t.n}</h1><div class="bh"><small style="color:var(--mu)">${veh().nombre}${veh().matricula?' · '+veh().matricula:''}</small><button class="b p" data-open="${t.tb}">${I('plus',18)}${t.b}</button></div>${t.id=='g'||t.id=='c'?resumen(t.id):''}<div class="card">${it.length?it.map(x=>`<div class="row" data-et="${x.t}" data-id="${x.r.id}" tabindex="0" role="button"><span class="ic2">${I(IC[x.t])}</span><div><b>${TX[x.t](x.r)}</b><small>${t.id=='d'?'Vence el ':''}${dmy(x.f)}${t.id=='g'?' · '+LB[x.t]:''}</small></div><span class="am">${x.a!=null?eur(x.a):''}</span></div>`).join(''):`<div class="empty">Aún no hay registros. Pulsa «${t.b}» para crear el primero.</div>`}</div>`}
+function stats(){const c=calc();return`<h1>Estadísticas</h1><div class="charts"><div class="card"><div class="ch"><span class="ic">${I('euro')}</span>Gasto mensual (€)</div>${bars(c.gs,c.ml,'€')}</div><div class="card"><div class="ch"><span class="ic">${I('gauge')}</span>Kilómetros por mes</div>${bars(c.ks,c.ml,'km')}</div></div>`}
+function render(){const t=TB.find(x=>x.id==S.tab),th=document.documentElement.dataset.theme=='light';
+$('#sd').innerHTML=`<div class="logo"><i>${I('car')}</i>Garaje</div>`+TB.map(x=>`<button class="nv ${x.id==S.tab?'on':''}" data-t="${x.id}">${I(x.i)}${x.n}</button>`).join('');
+$('#bn').innerHTML=TB.map(x=>`<button class="${x.id==S.tab?'on':''}" data-t="${x.id}">${I(x.i)}${x.n}</button>`).join('');
+$('#ch').innerHTML=S.veh.map(v=>`<button class="chip ${v.id==S.cur?'on':''}" data-v="${v.id}">${v.nombre}</button>`).join('')+`<button class="chip add" data-open="vehiculos">+ Añadir vehículo</button>`;
+$('#tg').innerHTML=I(th?'moon':'sun');$('#out').innerHTML=I('out');
+const w=$('#vw');w.innerHTML=!S.cur?`<div class="card"><div class="empty"><p>Todavía no tienes ningún vehículo.</p><button class="b p" data-open="vehiculos">${I('plus',18)}Añadir mi primer vehículo</button></div></div>`:S.tab=='ini'?home():S.tab=='e'?stats():lst(t);
+w.classList.remove('view');void w.offsetWidth;w.classList.add('view')}
+function open(tb,r=null){const f=F[tb];M={t:tb,r};const fd=f.fl.map(([n,l,t,p,o])=>{let v=r?r[n]:null;if(v==null)v=t=='date'&&n=='fecha'?ymd(new Date()):t=='sel'&&r==null?'':'';
+if(t=='int'||t=='dec')v=v==null?'':String(v).replace('.',',');if(t=='sel'&&n=='lleno'&&r)v=r.lleno?'Sí':'No';
+const inp=t=='calc'?`<output id="f_imp">${r&&r.importe!=null?eur(r.importe):'Calculado automáticamente'}</output>`:t=='sel'?`<select id="f_${n}">${p.split('|').map(x=>`<option ${x==v?'selected':''}>${x}</option>`).join('')}</select>`:`<input id="f_${n}" type="${t=='date'?'date':'text'}" ${t=='int'||t=='dec'?'inputmode="decimal"':''} placeholder="${p||''}" value="${v}">`;
+return`<label class="cap ${t=='text'?'full':''} ${v!==''&&t!='sel'?'ok':''}" data-n="${n}" data-t="${t}" data-o="${o||''}"><span>${l}${o?' (opcional)':''}</span>${inp}</label>`}).join('');
+$('#md').innerHTML=`<div class="ov" data-close><div class="md" role="dialog" aria-modal="true"><div class="mh"><span class="ic">${I(IC[tb])}</span><h2>${r?'Editar registro':f.a}</h2><button class="x" data-close aria-label="Cerrar">${I('x',18)}</button></div><div class="fl">${fd}</div><div class="mf">${r?`<button class="b g" data-del style="margin-right:auto;color:var(--er)">Eliminar</button>`:''}<button class="b g" data-close>Cancelar</button><button class="b p" data-save>${I('check',18)}Guardar</button></div></div></div>`;
+if(!r)setTimeout(()=>{const i=document.querySelector('#md input:not([type=date])');i&&i.focus()},60)}
+const close=()=>{$('#md').innerHTML='';M=null};
+async function guardar(){const rec={};let bad=false;document.querySelectorAll('#md .cap').forEach(c=>{const n=c.dataset.n,t=c.dataset.t,o=c.dataset.o;if(t=='calc')return;const raw=$('#f_'+n).value.trim();let v=raw,e=false;
+if(!raw){v=null;e=!o}else if(t=='int'||t=='dec'){v=PA[t](raw);e=isNaN(v)||v<0}
+if(n=='lleno')v=raw=='Sí';c.classList.toggle('err',e);if(e)bad=true;rec[n]=v});
+if(bad)return toast('Revisa los campos marcados en rojo',1);
+if(M.t=='repostajes')rec.importe=Math.round(rec.litros*rec.precio_litro*100)/100;
+const bt=$('[data-save]');bt.disabled=true;let q,id=M.r&&M.r.id;
+if(M.t=='vehiculos')q=M.r?sb.from('vehiculos').update(rec).eq('id',id).select().single():sb.from('vehiculos').insert(rec).select().single();
+else{if(!M.r)rec.vehiculo_id=S.cur;q=M.r?sb.from(M.t).update(rec).eq('id',id):sb.from(M.t).insert(rec)}
+const{data,error}=await q;if(error){bt.disabled=false;return toast('No se pudo guardar: '+error.message,1)}
+if(M.t=='vehiculos'&&!M.r)S.cur=data.id;
+if(rec.km&&rec.km>(veh()?veh().km_actuales||0:0)&&M.t!='vehiculos')await sb.from('vehiculos').update({km_actuales:rec.km}).eq('id',S.cur);
+close();await datos();toast('Guardado correctamente')}
+async function eliminar(){const v=M.t=='vehiculos';if(!confirm(v?'¿Eliminar este vehículo y TODOS sus registros? No se puede deshacer.':'¿Eliminar este registro? No se puede deshacer.'))return;
+const{error}=await sb.from(M.t).delete().eq('id',M.r.id);if(error)return toast('No se pudo eliminar: '+error.message,1);close();await datos();toast('Eliminado')}
+document.addEventListener('click',async e=>{const c=s=>e.target.closest(s);
+if(c('.md')&&!c('[data-close]')&&!c('[data-save]')&&!c('[data-del]'))return;
+if(c('[data-save]'))return guardar();if(c('[data-del]'))return eliminar();if(c('[data-close]'))return close();
+if(c('[data-ev]'))return open('vehiculos',veh());
+if(c('[data-open]'))return open(c('[data-open]').dataset.open);
+if(c('[data-et]')){const t=c('[data-et]').dataset.et;return open(t,S.d[t].find(x=>x.id==c('[data-et]').dataset.id))}
+if(c('[data-sm]')){S.sm=c('[data-sm]').dataset.sm;return render()}
+if(c('[data-t]')){S.tab=c('[data-t]').dataset.t;return render()}
+if(c('[data-v]')){S.cur=c('[data-v]').dataset.v;return datos()}
+if(c('[data-go]')){S.tab=c('[data-go]').dataset.go;render();scrollTo(0,0);return}
+if(c('#tg')){const r=document.documentElement,n=r.dataset.theme=='light'?'dark':'light';r.dataset.theme=n;try{localStorage.setItem('tema',n)}catch(x){}render()}
+if(c('#out'))await sb.auth.signOut()});
+document.addEventListener('keydown',e=>{if(e.key=='Escape')close();if(e.key=='Enter'&&e.target.matches&&e.target.matches('.row,.card,.li'))e.target.click();if(e.key=='Enter'&&e.target.closest&&e.target.closest('#au'))$('#ent').click()});
+document.addEventListener('input',e=>{const c=e.target.closest('.cap');if(!c)return;c.classList.remove('err');c.classList.toggle('ok',!!e.target.value.trim()||e.target.tagName=='SELECT');
+const o=$('#f_imp');if(o){const l=PA.dec($('#f_litros').value),p=PA.dec($('#f_precio_litro').value),w=o.closest('.cap');if(l>=0&&p>=0){o.textContent=eur(l*p);w.classList.add('ok')}else{o.textContent='Calculado automáticamente';w.classList.remove('ok')}}});
+async function acceso(reg){const em=$('#em').value.trim(),pw=$('#pw').value,m=$('#am');m.style.color='var(--er)';m.textContent='';if(!em||pw.length<6){m.textContent='Escribe tu correo y una contraseña de al menos 6 caracteres.';return}
+const r=reg?await sb.auth.signUp({email:em,password:pw}):await sb.auth.signInWithPassword({email:em,password:pw});
+if(r.error)m.textContent=r.error.message=='Invalid login credentials'?'Correo o contraseña incorrectos.':r.error.message;else if(reg&&!r.data.session){m.style.color='var(--ok)';m.textContent='Cuenta creada. Revisa tu correo y pulsa el enlace de confirmación; después pulsa Entrar.'}}
+$('#ent').onclick=()=>acceso(false);$('#reg').onclick=()=>acceso(true);$('#aui').innerHTML=I('car');
+function pantalla(ok){$('#au').hidden=ok;$('#app').hidden=!ok;$('#bn').hidden=!ok}
+sb.auth.onAuthStateChange((ev,s)=>{const u=s&&s.user;if(u&&S.user&&S.user.id==u.id)return;S.user=u||null;if(u){pantalla(true);setTimeout(datos,0)}else{pantalla(false);S.veh=[];S.cur=null}});
+let tema=null;try{tema=localStorage.getItem('tema')}catch(x){}
+document.documentElement.dataset.theme=tema||(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark');
+if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+</script></body></html>
